@@ -38,28 +38,28 @@ enum Season: Int, CaseIterable, Hashable {
 
     var skyTop: Color {
         switch self {
-        case .spring: Color(hex: 0xF4D9DF)
-        case .summer: Color(hex: 0xCBE3E6)
-        case .autumn: Color(hex: 0xF1D6B8)
-        case .winter: Color(hex: 0xC9D4DF)
+        case .spring: Color(hex: 0xFBEEF1)
+        case .summer: Color(hex: 0xEAF4F5)
+        case .autumn: Color(hex: 0xF9EEE2)
+        case .winter: Color(hex: 0xE6ECF2)
         }
     }
 
     var skyBottom: Color {
         switch self {
-        case .spring: Color(hex: 0xFBF5EE)
-        case .summer: Color(hex: 0xF7F3E8)
-        case .autumn: Color(hex: 0xFAF2E6)
-        case .winter: Color(hex: 0xF1F3F5)
+        case .spring: Color(hex: 0xFFFDFB)
+        case .summer: Color(hex: 0xFEFEFA)
+        case .autumn: Color(hex: 0xFFFCF8)
+        case .winter: Color(hex: 0xFBFCFD)
         }
     }
 
     var ground: Color {
         switch self {
-        case .spring: Color(hex: 0xE3D8C4)
-        case .summer: Color(hex: 0xD3D9B8)
-        case .autumn: Color(hex: 0xDCC8A8)
-        case .winter: Color(hex: 0xEDF0F2)
+        case .spring: Color(hex: 0xF4EFE8)
+        case .summer: Color(hex: 0xEEF1E3)
+        case .autumn: Color(hex: 0xF3ECE0)
+        case .winter: Color(hex: 0xF7F8FA)
         }
     }
 
@@ -76,13 +76,13 @@ enum Season: Int, CaseIterable, Hashable {
     var foliage: [Color] {
         switch self {
         case .spring:
-            [Color(hex: 0xF6B7C6), Color(hex: 0xF3A5B8), Color(hex: 0xFAD0DA), Color(hex: 0xEE90A8)]
+            [Color(hex: 0xF4A3B8), Color(hex: 0xEF8DA8), Color(hex: 0xF8BCCB), Color(hex: 0xE97A99)]
         case .summer:
             [Color(hex: 0x7FA66B), Color(hex: 0x5E8C55), Color(hex: 0x9CBF7D), Color(hex: 0x4F7A4A)]
         case .autumn:
             [Color(hex: 0xC8452F), Color(hex: 0xDD6B35), Color(hex: 0xE89A3C), Color(hex: 0xB33A3A), Color(hex: 0xF0B85A)]
         case .winter:
-            [Color(hex: 0xFFFFFF), Color(hex: 0xF4F7FA), Color(hex: 0xE6EDF3)]
+            [Color(hex: 0xFFFFFF), Color(hex: 0xE3EBF3), Color(hex: 0xD2DDE8)]
         }
     }
 

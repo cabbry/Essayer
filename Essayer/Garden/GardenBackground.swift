@@ -20,7 +20,7 @@ struct GardenBackground: View {
             let sunRadius = width * 0.15
             let sun = CGRect(x: width * 0.76 - sunRadius, y: height * 0.17 - sunRadius,
                              width: sunRadius * 2, height: sunRadius * 2)
-            context.fill(Path(ellipseIn: sun), with: .color(season.sun.opacity(0.5)))
+            context.fill(Path(ellipseIn: sun), with: .color(season.sun.opacity(0.32)))
 
             var mountain = Path()
             mountain.move(to: CGPoint(x: -width * 0.05, y: groundY))
@@ -30,7 +30,7 @@ struct GardenBackground: View {
             mountain.addQuadCurve(to: CGPoint(x: width * 0.72, y: groundY),
                                   control: CGPoint(x: width * 0.46, y: groundY - height * 0.04))
             mountain.closeSubpath()
-            context.fill(mountain, with: .color(Color.ink.opacity(0.07)))
+            context.fill(mountain, with: .color(Color.ink.opacity(0.05)))
 
             var snowCap = Path()
             snowCap.move(to: CGPoint(x: width * 0.234, y: groundY - height * 0.16))
