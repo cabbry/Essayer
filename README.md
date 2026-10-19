@@ -31,7 +31,9 @@ saisons, pour voir les quatre décors sans attendre.
    existant, nommé exactement **« Essayer AppStore »**.
 3. **Créer l'app dans App Store Connect** : Apps → « + » → New App, bundle ID
    `com.cabbry.essayer`, SKU libre.
-4. **Secrets GitHub** (Settings → Secrets and variables → Actions) :
+4. **Secrets GitHub** : lancer `bash scripts/set-github-secrets.sh` depuis Git
+   Bash (il demande chaque valeur et l'envoie directement à GitHub), ou les
+   saisir dans Settings → Secrets and variables → Actions :
    | Secret | Contenu |
    |---|---|
    | `APPLE_TEAM_ID` | Team ID (10 caractères) |
