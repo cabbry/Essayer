@@ -1,0 +1,22 @@
+# Xcode / build
+*.xcodeproj
+build/
+DerivedData/
+*.xcarchive
+*.ipa
+xcuserdata/
+
+# macOS
+.DS_Store
+
+# Secrets — ne jamais committer de clés
+*.p8
+*.p12
+*.mobileprovision
+
+# Sources de l'idée (vidéo et extrait audio)
+*.mp4
+*.mp3
+
+# Réglages locaux de Claude Code
+.claude/settings.local.json
