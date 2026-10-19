@@ -57,9 +57,14 @@ struct ContentView: View {
                 VStack(spacing: 0) {
                     Text(season.kanji)
                         .font(.system(size: 26, design: .serif))
-                    Text(previewSeason == nil ? season.name : "Aperçu")
+                    Text(season.name)
                         .font(.caption2)
                         .foregroundStyle(Color.ink.opacity(0.6))
+                    if previewSeason != nil {
+                        Text("aperçu")
+                            .font(.system(size: 9, design: .serif).italic())
+                            .foregroundStyle(Color.vermilion)
+                    }
                 }
                 .frame(minWidth: 56)
             }
