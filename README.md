@@ -21,8 +21,11 @@ Sans les secrets Apple, le workflow fait une **compilation seule** (sans
 signature). C'est pratique pour vérifier que le code compile. On peut aussi la
 lancer à la main : Actions → TestFlight → Run workflow, case « Compilation seule ».
 
-Astuce : toucher le kanji de la saison (en haut à droite) fait défiler les
-saisons, pour voir les quatre décors sans attendre.
+Astuces pour tester :
+- toucher le kanji de la saison (en haut à droite) fait défiler les saisons,
+  pour voir les quatre décors sans attendre ;
+- un appui long sur le titre « Essayer » montre l'arbre et les lianes au
+  maximum de la saison (30 essais) ; un second appui long revient à la réalité.
 
 ## Mise en place TestFlight (à faire une fois)
 
@@ -53,7 +56,7 @@ Le numéro de build est dérivé automatiquement du numéro d'exécution GitHub 
 | --- | --- |
 | `Essayer/App` | Point d'entrée de l'appli |
 | `Essayer/Model` | Les essais (stockés sur l'appareil), les défis du jour, les saisons |
-| `Essayer/Garden` | Le jardin dessiné : fond, cerisier généré, pétales qui tombent |
+| `Essayer/Garden` | Le jardin dessiné : fond, cerisier généré, lianes, pétales qui tombent |
 | `Essayer/Views` | L'écran principal et l'historique des essais |
 | `Essayer/Support` | Petits utilitaires (couleurs, géométrie, aléatoire reproductible) |
 
@@ -61,9 +64,14 @@ Le numéro de build est dérivé automatiquement du numéro d'exécution GitHub 
 
 - L'arbre est généré une fois pour toutes à partir d'une graine : il a toujours
   la même forme.
-- Au début, c'est une jeune pousse. Les branches poussent pendant les ~18
-  premiers essais, et l'arbre atteint sa taille adulte vers 25 essais.
-- Chaque essai ajoute 5 fleurs (ou feuilles, ou neige selon la saison).
-  L'arbre est en pleine floraison vers 180 essais.
+- **L'arbre repart de zéro à chaque saison** (1er mars, 1er juin,
+  1er septembre, 1er décembre) : seuls les essais de la saison en cours comptent.
+- Au début de la saison, c'est une jeune pousse. Branches, taille et fleurs
+  grandissent avec les essais, jusqu'au **maximum à 30 essais**.
+- Des **lianes** rampent le long des deux bords de l'écran : elles sortent de
+  l'écran et y rentrent, et s'allongent elles aussi jusqu'à 30 essais.
 - L'arbre ne meurt jamais et ne perd rien si on rate un jour.
 - Un seul essai par jour : celui du défi du jour.
+- **Une notification arrive chaque matin à 9 h** avec le défi du jour, sauf si
+  l'essai est déjà fait. Les notifications sont programmées pour les 30 jours
+  suivants, et reprogrammées à chaque ouverture de l'appli.

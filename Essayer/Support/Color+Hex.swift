@@ -17,6 +17,8 @@ extension Color {
     static let vermilion = Color(hex: 0xB9442F)
     /// Écorce du cerisier.
     static let bark = Color(hex: 0x4A3B34)
+    /// Tiges des lianes.
+    static let vine = Color(hex: 0x5F5B3C)
     /// Cœur des fleurs de cerisier.
     static let blossomHeart = Color(hex: 0xC9506E)
 }

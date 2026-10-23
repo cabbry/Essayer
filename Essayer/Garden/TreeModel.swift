@@ -26,8 +26,10 @@ struct TreeModel {
     }
 
     static let maxDepth = 6
-    static let blossomsPerAttempt = 5.0
-    static let maxBlossoms = 900
+    /// Nombre d'essais dans la saison pour que l'arbre (et les lianes)
+    /// atteigne son maximum.
+    static let fullGrowthAttempts = 30.0
+    static let maxBlossoms = 450
 
     let branches: [Branch]
     let anchors: [Anchor]
@@ -50,11 +52,11 @@ struct TreeModel {
                 // Les cerisiers s'étalent, mais sans retomber vers le sol.
                 childAngle += (Double.pi / 2 - childAngle) * 0.12
                 let ratio = 0.7 + rng.unit() * 0.12
-                grow(from: end, angle: childAngle, length: length * ratio, width: width * 0.68, depth: depth + 1)
+                grow(from: end, angle: childAngle, length: length * ratio, width: width * 0.7, depth: depth + 1)
             }
         }
 
-        grow(from: .zero, angle: Double.pi / 2 + 0.05, length: 0.3, width: 0.06, depth: 0)
+        grow(from: .zero, angle: Double.pi / 2 + 0.05, length: 0.3, width: 0.078, depth: 0)
 
         // Normalise : 1 de haut, au plus 0,7 de chaque côté du tronc.
         let height = grown.map { max($0.start.y, $0.end.y) }.max() ?? 1
@@ -82,15 +84,25 @@ struct TreeModel {
         self.anchors = anchors
     }
 
+    /// Où en est la saison, de 0 (une jeune pousse) à 1 (arbre au maximum).
+    static func fraction(for progress: Double) -> Double {
+        min(max(progress / fullGrowthAttempts, 0), 1)
+    }
+
     /// Jusqu'à quelle profondeur de branches l'arbre a poussé. Un niveau
     /// partiel dessine des branches en train de pousser.
     static func growthLevel(for progress: Double) -> Double {
-        min(Double(maxDepth + 1), 2.2 + progress * 0.27)
+        2.2 + fraction(for: progress) * (Double(maxDepth + 1) - 2.2)
     }
 
-    /// La taille de l'arbre : une pousse au début, adulte vers 25 essais.
+    /// La taille de l'arbre : une pousse en début de saison, adulte à 30 essais.
     static func scale(for progress: Double) -> CGFloat {
-        CGFloat(0.55 + 0.45 * min(1, progress / 25))
+        CGFloat(0.55 + 0.45 * fraction(for: progress))
+    }
+
+    /// Combien de fleurs (ou feuilles, ou neige) portent les branches.
+    static func blossomCount(for progress: Double) -> Double {
+        fraction(for: progress) * Double(maxBlossoms)
     }
 
     /// Un endroit de fleur est visible dès que sa branche a poussé jusque-là.

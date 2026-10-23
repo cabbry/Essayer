@@ -22,6 +22,12 @@ final class AttemptStore {
         attempts.contains { calendar.isDate($0.date, inSameDayAs: day) }
     }
 
+    /// Les essais de la saison en cours : ce sont eux qui font pousser l'arbre.
+    func attempts(inSeasonOf day: Date, calendar: Calendar = .current) -> [Attempt] {
+        let start = Season.start(of: day, calendar: calendar)
+        return attempts.filter { $0.date >= start }
+    }
+
     /// Un seul essai par jour : le défi du jour.
     func attempt(_ challenge: String, on day: Date = .now) {
         guard !hasAttempted(on: day) else { return }

@@ -49,8 +49,8 @@ struct TreeView: View, Animatable {
         let visible = model.anchors.filter { model.isVisible($0, growth: growth) }
         guard !visible.isEmpty else { return }
 
-        let total = progress * TreeModel.blossomsPerAttempt
-        let count = min(Int(total.rounded(.up)), TreeModel.maxBlossoms, visible.count * 3)
+        let total = TreeModel.blossomCount(for: progress)
+        let count = min(Int(total.rounded(.up)), visible.count * 3)
         guard count > 0 else { return }
         let palette = season.foliage
         let baseRadius = layout.treeSize * 0.024

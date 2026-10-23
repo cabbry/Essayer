@@ -5,10 +5,10 @@ import CoreGraphics
 struct GardenLayout {
     let size: CGSize
 
-    var groundY: CGFloat { size.height * 0.58 }
+    var groundY: CGFloat { size.height * 0.6 }
 
     /// La hauteur de l'arbre adulte.
-    var treeSize: CGFloat { min(size.height * 0.36, size.width * 0.7) }
+    var treeSize: CGFloat { min(size.height * 0.42, size.width * 0.74) }
 
     var base: CGPoint { CGPoint(x: size.width / 2, y: groundY + 6) }
 

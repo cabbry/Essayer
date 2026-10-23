@@ -14,8 +14,57 @@ enum Season: Int, CaseIterable, Hashable {
         }
     }
 
+    /// Le premier jour de la saison qui contient `date`. L'arbre repart de
+    /// zéro à chaque nouvelle saison.
+    static func start(of date: Date, calendar: Calendar = .current) -> Date {
+        let year = calendar.component(.year, from: date)
+        let month = calendar.component(.month, from: date)
+        let (startYear, startMonth): (Int, Int) = switch month {
+        case 3...5: (year, 3)
+        case 6...8: (year, 6)
+        case 9...11: (year, 9)
+        case 12: (year, 12)
+        default: (year - 1, 12)
+        }
+        return calendar.date(from: DateComponents(year: startYear, month: startMonth, day: 1))
+            ?? calendar.startOfDay(for: date)
+    }
+
     var next: Season {
         Season(rawValue: (rawValue + 1) % Season.allCases.count) ?? .spring
+    }
+
+    /// « ce printemps », « cet été »… pour le compteur d'essais.
+    var thisSeason: String {
+        switch self {
+        case .spring: "ce printemps"
+        case .summer: "cet été"
+        case .autumn: "cet automne"
+        case .winter: "cet hiver"
+        }
+    }
+
+    /// Les feuilles des lianes : le lierre reste vert l'hiver.
+    var vineLeaves: [Color] {
+        switch self {
+        case .spring:
+            [Color(hex: 0x8DBF6A), Color(hex: 0x6FA855), Color(hex: 0xA7CF83), Color(hex: 0x5E9A4B)]
+        case .summer:
+            [Color(hex: 0x4F8A45), Color(hex: 0x3F7A3A), Color(hex: 0x669E55), Color(hex: 0x2F6A35)]
+        case .autumn:
+            [Color(hex: 0xC8452F), Color(hex: 0xDD6B35), Color(hex: 0xE89A3C), Color(hex: 0xB33A3A), Color(hex: 0x8A9A3E)]
+        case .winter:
+            [Color(hex: 0x3D6B4A), Color(hex: 0x4D7A58), Color(hex: 0x2F5C3F)]
+        }
+    }
+
+    /// Les petites fleurs des lianes, au printemps et en été seulement.
+    var vineFlower: Color? {
+        switch self {
+        case .spring: Color(hex: 0xF2A0B6)
+        case .summer: .white
+        case .autumn, .winter: nil
+        }
     }
 
     var name: String {

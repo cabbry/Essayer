@@ -9,12 +9,15 @@ struct ContentView: View {
     @State private var burstDate: Date?
     /// Permet de voir les autres saisons en touchant le kanji, sans attendre.
     @State private var previewSeason: Season?
+    /// Appui long sur le titre : montre l'arbre au maximum de la saison.
+    @State private var previewsFullGrowth = false
     @State private var showsHistory = false
 
     private var realSeason: Season { Season(date: today) }
     private var season: Season { previewSeason ?? realSeason }
     private var challenge: String { Challenges.forDay(today) }
     private var triedToday: Bool { store.hasAttempted(on: today) }
+    private var seasonAttempts: Int { store.attempts(inSeasonOf: today).count }
 
     var body: some View {
         ZStack {
@@ -30,9 +33,17 @@ struct ContentView: View {
             .padding(.vertical, 12)
         }
         .foregroundStyle(Color.ink)
-        .onAppear { progress = Double(store.attempts.count) }
+        .onAppear { progress = Double(seasonAttempts) }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { today = .now }
+        }
+        // Une nouvelle saison commence : l'arbre repart de zéro.
+        .onChange(of: Season.start(of: today)) {
+            previewsFullGrowth = false
+            syncProgress()
+        }
+        .task(id: "\(triedToday)-\(Calendar.current.startOfDay(for: today))") {
+            await DailyReminder.refresh(alreadyTriedToday: triedToday)
         }
         .sheet(isPresented: $showsHistory) {
             HistoryView()
@@ -46,9 +57,11 @@ struct ContentView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Essayer")
                     .font(.system(.largeTitle, design: .serif).weight(.semibold))
-                Text(attemptsLabel)
+                    .onLongPressGesture(perform: toggleFullGrowthPreview)
+                    .accessibilityHint("Appui long pour voir l'arbre au maximum de la saison.")
+                Text(previewsFullGrowth ? "Aperçu : l'arbre au bout de 30 essais" : attemptsLabel)
                     .font(.system(.subheadline, design: .serif))
-                    .foregroundStyle(Color.ink.opacity(0.6))
+                    .foregroundStyle(previewsFullGrowth ? Color.vermilion : Color.ink.opacity(0.6))
             }
 
             Spacer()
@@ -122,10 +135,13 @@ struct ContentView: View {
     }
 
     private var attemptsLabel: String {
-        switch store.attempts.count {
-        case 0: "Ton arbre attend ton premier essai"
-        case 1: "1 essai"
-        default: "\(store.attempts.count) essais"
+        let count = seasonAttempts
+        let goal = Int(TreeModel.fullGrowthAttempts)
+        return switch count {
+        case 0: "Ton arbre attend ton premier essai \(realSeason.thisSeason)"
+        case 1: "1 essai \(realSeason.thisSeason)"
+        case goal...: "\(count) essais \(realSeason.thisSeason) : arbre en pleine forme"
+        default: "\(count) essais \(realSeason.thisSeason) sur \(goal)"
         }
     }
 
@@ -135,9 +151,20 @@ struct ContentView: View {
             store.attempt(challenge, on: now)
         }
         burstDate = now
-        withAnimation(.easeOut(duration: 2.2)) {
-            progress = Double(store.attempts.count)
+        previewsFullGrowth = false
+        syncProgress(duration: 2.2)
+    }
+
+    private func syncProgress(duration: Double = 1.6) {
+        let target = previewsFullGrowth ? TreeModel.fullGrowthAttempts : Double(seasonAttempts)
+        withAnimation(.easeInOut(duration: duration)) {
+            progress = target
         }
+    }
+
+    private func toggleFullGrowthPreview() {
+        previewsFullGrowth.toggle()
+        syncProgress()
     }
 
     private func showNextSeason() {

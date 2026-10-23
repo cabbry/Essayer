@@ -10,6 +10,7 @@ struct GardenView: View {
         ZStack {
             ZStack {
                 GardenBackground(season: season)
+                VinesView(season: season, progress: progress)
                 TreeView(season: season, progress: progress)
             }
             .id(season)
