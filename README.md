@@ -72,6 +72,10 @@ Le numéro de build est dérivé automatiquement du numéro d'exécution GitHub 
   l'écran et y rentrent, et s'allongent elles aussi jusqu'à 30 essais.
 - L'arbre ne meurt jamais et ne perd rien si on rate un jour.
 - Un seul essai par jour : celui du défi du jour.
+- **Les défis** (`Essayer/Model/Challenges.swift`) : 274 défis généraux et
+  24 par saison. Un jour sur quatre est un défi de saison, et aucun ne revient
+  dans la même saison. Les défis généraux reviennent environ une fois par an.
+  Tout le monde a le même défi le même jour.
 - **Une notification arrive chaque matin à 9 h** avec le défi du jour, sauf si
   l'essai est déjà fait. Les notifications sont programmées pour les 30 jours
   suivants, et reprogrammées à chaque ouverture de l'appli.
