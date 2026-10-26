@@ -68,8 +68,12 @@ jobs:
           mkdir -p shots
           N=1
           for SCENE in spring autumn summer winter history; do
-            xcrun simctl launch --terminate-running-process "$UDID" com.cabbry.essayer -screenshot "$SCENE"
-            sleep 8
+            # Fermer l'appli et laisser l'animation de fermeture se terminer :
+            # sinon la capture tombe pendant le fondu et paraît délavée.
+            xcrun simctl terminate "$UDID" com.cabbry.essayer 2>/dev/null || true
+            sleep 3
+            xcrun simctl launch "$UDID" com.cabbry.essayer -screenshot "$SCENE"
+            sleep 10
             xcrun simctl io "$UDID" screenshot "shots/${N}_${SCENE}.png"
             N=$((N + 1))
           done

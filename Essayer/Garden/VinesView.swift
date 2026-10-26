@@ -30,16 +30,27 @@ struct VinesView: View, Animatable {
         let fullLength = size.height - top + 40
         let length = fullLength * CGFloat(0.12 + 0.88 * grown)
 
+        // Une seconde ondulation, décalée pour chaque liane, casse la
+        // régularité de la sinusoïde : le tracé paraît plus naturel.
+        let wobble = 0.35
+        let wobbleRate = 1.7
+        let wobblePhase = vine.phase * 3
+
         func angle(_ y: CGFloat) -> Double {
             2 * Double.pi * Double(y / vine.wavelength) + vine.phase
         }
         func point(_ y: CGFloat) -> CGPoint {
-            let inward = vine.inset + vine.amplitude * CGFloat(sin(angle(y)))
+            let a = angle(y)
+            let wave = sin(a) + wobble * sin(wobbleRate * a + wobblePhase)
+            let inward = vine.inset + vine.amplitude * CGFloat(wave)
             return CGPoint(x: vine.side < 0 ? inward : size.width - inward, y: top + y)
         }
         /// dx/dy de la tige, pour orienter les feuilles.
         func slope(_ y: CGFloat) -> CGFloat {
-            let derivative = vine.amplitude * CGFloat(2 * Double.pi / Double(vine.wavelength) * cos(angle(y)))
+            let a = angle(y)
+            let rate = 2 * Double.pi / Double(vine.wavelength)
+            let wave = cos(a) + wobble * wobbleRate * cos(wobbleRate * a + wobblePhase)
+            let derivative = vine.amplitude * CGFloat(rate * wave)
             return vine.side < 0 ? derivative : -derivative
         }
 

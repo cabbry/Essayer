@@ -17,8 +17,9 @@ struct GardenBackground: View {
                                       startPoint: .zero, endPoint: CGPoint(x: 0, y: groundY))
             )
 
-            let sunRadius = width * 0.15
-            let sun = CGRect(x: width * 0.76 - sunRadius, y: height * 0.17 - sunRadius,
+            // Sous l'en-tête, pour ne pas passer derrière le kanji de la saison.
+            let sunRadius = width * 0.12
+            let sun = CGRect(x: width * 0.72 - sunRadius, y: height * 0.31 - sunRadius,
                              width: sunRadius * 2, height: sunRadius * 2)
             context.fill(Path(ellipseIn: sun), with: .color(season.sun.opacity(0.32)))
 
