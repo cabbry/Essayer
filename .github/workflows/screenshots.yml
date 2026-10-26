@@ -1,0 +1,85 @@
+name: Captures App Store
+
+# Captures de la fiche App Store sur le simulateur iPhone 6,9" (1320 x 2868) :
+# l'appli est lancée avec `-screenshot <scène>` (ScreenshotScene.swift, Debug
+# seulement), qui la place à une date de la saison voulue avec un carnet
+# d'essais fictif. Aucun secret, aucune signature, rien n'est publié : les
+# images sont dans l'artefact « appstore-screenshots ».
+
+on:
+  workflow_dispatch:
+
+jobs:
+  screenshots:
+    name: Captures simulateur
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode (dernier stable, comme la CI TestFlight)
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_26*.app 2>/dev/null \
+                    | grep -viE 'beta|release_candidate|_rc' | sort -V | tail -1)
+          if [ -z "$XCODE" ]; then XCODE=/Applications/Xcode.app; fi
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build for simulator (Debug, sans signature)
+        run: |
+          xcodebuild build \
+            -project Essayer.xcodeproj \
+            -scheme Essayer \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build/dd \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Captures
+        run: |
+          APP=build/dd/Build/Products/Debug-iphonesimulator/Essayer.app
+          RUNTIME=$(xcrun simctl list runtimes -j \
+            | jq -r '[.runtimes[] | select(.platform == "iOS" and .isAvailable)] | last | .identifier')
+          echo "Runtime : $RUNTIME"
+          UDID=""
+          for MODEL in "iPhone 17 Pro Max" "iPhone 16 Pro Max" "iPhone 16 Plus"; do
+            TYPE=$(xcrun simctl list devicetypes -j \
+              | jq -r --arg n "$MODEL" '.devicetypes[] | select(.name == $n) | .identifier')
+            [ -n "$TYPE" ] || continue
+            UDID=$(xcrun simctl create "shots $MODEL" "$TYPE" "$RUNTIME") && break
+          done
+          [ -n "$UDID" ] || { echo "::error::Aucun simulateur iPhone 6,9\" disponible"; exit 1; }
+          echo "Simulateur : $MODEL ($UDID)"
+
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl ui "$UDID" appearance light
+          xcrun simctl status_bar "$UDID" override --time "9:41" \
+            --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
+          xcrun simctl install "$UDID" "$APP"
+
+          mkdir -p shots
+          N=1
+          for SCENE in spring autumn summer winter history; do
+            xcrun simctl launch --terminate-running-process "$UDID" com.cabbry.essayer -screenshot "$SCENE"
+            sleep 8
+            xcrun simctl io "$UDID" screenshot "shots/${N}_${SCENE}.png"
+            N=$((N + 1))
+          done
+          xcrun simctl shutdown "$UDID"
+          sips -g pixelWidth -g pixelHeight shots/*.png
+
+      - name: Upload captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: appstore-screenshots
+          path: shots
+          retention-days: 14

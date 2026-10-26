@@ -4,14 +4,14 @@ struct ContentView: View {
     @Environment(AttemptStore.self) private var store
     @Environment(\.scenePhase) private var scenePhase
 
-    @State private var today = Date.now
+    @State private var today = ScreenshotScene.current?.date ?? Date.now
     @State private var progress: Double = 0
     @State private var burstDate: Date?
     /// Permet de voir les autres saisons en touchant le kanji, sans attendre.
     @State private var previewSeason: Season?
     /// Appui long sur le titre : montre l'arbre au maximum de la saison.
     @State private var previewsFullGrowth = false
-    @State private var showsHistory = false
+    @State private var showsHistory = ScreenshotScene.current?.showsHistory ?? false
 
     private var realSeason: Season { Season(date: today) }
     private var season: Season { previewSeason ?? realSeason }
@@ -35,7 +35,7 @@ struct ContentView: View {
         .foregroundStyle(Color.ink)
         .onAppear { progress = Double(seasonAttempts) }
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { today = .now }
+            if phase == .active, ScreenshotScene.current == nil { today = .now }
         }
         // Une nouvelle saison commence : l'arbre repart de zéro.
         .onChange(of: Season.start(of: today)) {
@@ -43,6 +43,8 @@ struct ContentView: View {
             syncProgress()
         }
         .task(id: "\(triedToday)-\(Calendar.current.startOfDay(for: today))") {
+            // Pas de demande d'autorisation par-dessus les captures App Store.
+            guard ScreenshotScene.current == nil else { return }
             await DailyReminder.refresh(alreadyTriedToday: triedToday)
         }
         .sheet(isPresented: $showsHistory) {
