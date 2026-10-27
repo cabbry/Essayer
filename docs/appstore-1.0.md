@@ -40,10 +40,13 @@ DES CENTAINES DE PETITS DÉFIS
 Des gestes simples, faisables en quelques minutes, sans matériel ni argent : remercier, prendre des nouvelles, partager un souvenir, écouter, ralentir, oser. Tout le monde reçoit le même défi le même jour.
 
 SANS PRESSION
-Rien ne se perd si tu rates un jour : l'arbre ne fane jamais. Un seul défi par jour, et un rappel doux chaque matin si tu le souhaites.
+Rien ne se perd si tu rates un jour : l'arbre ne fane jamais. Un seul défi par jour, un rappel doux le matin et une relance en fin d'après-midi si tu le souhaites.
+
+ENSEMBLE
+Découvre combien de personnes ont essayé le défi du jour, et dis-nous quand un défi n'est pas pour toi.
 
 RESPECTUEUX DE TA VIE PRIVÉE
-Pas de compte, pas de publicité, aucune donnée collectée. Tes essais restent sur ton iPhone.
+Pas de compte, pas de publicité, pas de suivi. Tes essais restent sur ton iPhone ; seules des statistiques anonymes sont partagées, via iCloud.
 ```
 
 ## Mots-clés (100 max, séparés par des virgules sans espace)
@@ -67,9 +70,17 @@ Copie locale : `E:\Projects\_Common\AppStore-Screenshots\Essayer\`.
 
 ## Confidentialité de l'app (questionnaire App Store Connect)
 
-- Collecte de données : **Aucune donnée collectée** (« Data Not Collected »).
-- Les essais sont stockés localement (UserDefaults) ; les rappels sont des
-  notifications locales, sans serveur.
+Depuis l'ajout de CloudKit (essais anonymes, « Pas pour moi ») :
+
+- « Collectez-vous des données ? » → **Oui**.
+- Type : **Utilisation → Interactions avec le produit** (« Product Interaction »).
+- Utilisation : **Analyse** (« Analytics ») et **Fonctionnalités de l'app** (le
+  compteur « X personnes ont essayé aujourd'hui »).
+- Liées à l'identité de l'utilisateur : **Non**.
+- Utilisées pour le suivi : **Non**.
+
+Les essais eux-mêmes restent stockés localement (UserDefaults) ; les rappels
+sont des notifications locales, sans serveur.
 
 ## Classification par âge
 
@@ -78,16 +89,16 @@ Répondre **Aucun / Non** à toutes les questions → **4+**.
 ## Notes pour la review (App Review Information)
 
 ```
-Essayer has no account and no server: everything is stored on the device.
+Essayer has no account and no server of its own. Attempts are stored on the device; anonymous counts (date, challenge, optional "not for me" reason) are saved in the app's public CloudKit database.
 
-Each day the app shows one small challenge; tapping "J'ai essayé" ("I tried") records it and grows the cherry tree. Only one attempt per day is possible.
+Each day the app shows one small challenge; tapping "J'ai essayé" ("I tried") records it and grows the cherry tree. Only one attempt per day is possible. "Pas pour moi" ("Not for me") sends anonymous feedback about the challenge.
 
 To see more of the app during the review:
 - Tap the kanji at the top right to preview the four seasons (spring, summer, autumn, winter).
 - Long-press the "Essayer" title to preview the tree at full growth (30 attempts); long-press again to return.
 - The history of attempts is behind the book icon at the top right.
 
-The app asks for permission to send one local notification per day (9:00) with the challenge of the day.
+The app asks for permission to send local notifications: the challenge of the day at 9:00, and a reminder at 17:00 if it has not been tried yet.
 
 Thank you for the review!
 ```
