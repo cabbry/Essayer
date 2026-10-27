@@ -10,7 +10,7 @@ Textes à saisir dans App Store Connect (Essayer → Distribution → iOS 1.0).
 | Nom (30 max) | Essayer |
 | Sous-titre (30 max) | Un petit défi par jour |
 | Catégorie principale | Style de vie |
-| Catégorie secondaire | Santé et forme |
+| Catégorie secondaire | Aucune (« Forme et santé » imposerait la déclaration de dispositif médical) |
 | Prix | Gratuit |
 | Copyright | 2026 Jr Cabbry |
 | URL d'assistance | https://cabbry.github.io/essayer-site/ |
