@@ -12,6 +12,15 @@ struct ContentView: View {
     /// Appui long sur le titre : montre l'arbre au maximum de la saison.
     @State private var previewsFullGrowth = false
     @State private var showsHistory = ScreenshotScene.current?.showsHistory ?? false
+    /// Combien de personnes ont essayé le défi du jour (CloudKit).
+    @State private var communityCount: Int?
+    /// Les défis retirés à distance : les changer redessine le défi du jour.
+    @State private var disabledChallenges = Challenges.disabled
+    @State private var showsDislikeOptions = false
+    /// Le jour où « Pas pour moi » a été envoyé, pour ne le proposer qu'une fois.
+    @AppStorage("dislikedDay") private var dislikedDay = ""
+
+    private static let dislikeReasons = ["Trop difficile", "Pas mon truc", "Mal formulé", "Pas le bon moment"]
 
     private var realSeason: Season { Season(date: today) }
     private var season: Season { previewSeason ?? realSeason }
@@ -42,7 +51,12 @@ struct ContentView: View {
             previewsFullGrowth = false
             syncProgress()
         }
-        .task(id: "\(triedToday)-\(Calendar.current.startOfDay(for: today))") {
+        .task(id: Community.dayKey(today)) {
+            await Community.refreshDisabledChallenges()
+            disabledChallenges = Challenges.disabled
+            communityCount = await Community.attemptCount(on: today)
+        }
+        .task(id: "\(triedToday)-\(Community.dayKey(today))-\(disabledChallenges.count)") {
             // Pas de demande d'autorisation par-dessus les captures App Store.
             guard ScreenshotScene.current == nil else { return }
             await DailyReminder.refresh(alreadyTriedToday: triedToday)
@@ -127,13 +141,41 @@ struct ContentView: View {
                 .tint(.vermilion)
             }
 
-            Text("Essayer, c'est déjà réussir.")
-                .font(.system(.footnote, design: .serif).italic())
-                .foregroundStyle(Color.ink.opacity(0.55))
+            if let count = communityCount, count >= Community.visibleCountThreshold {
+                Label("\(count) personnes ont essayé aujourd'hui", systemImage: "person.2")
+                    .font(.footnote)
+                    .foregroundStyle(Color.ink.opacity(0.6))
+            }
+
+            HStack(alignment: .firstTextBaseline) {
+                Text("Essayer, c'est déjà réussir.")
+                    .font(.system(.footnote, design: .serif).italic())
+                    .foregroundStyle(Color.ink.opacity(0.55))
+                Spacer(minLength: 8)
+                if dislikedDay == Community.dayKey(today) {
+                    Text("Merci, c'est noté")
+                        .font(.footnote)
+                        .foregroundStyle(Color.ink.opacity(0.45))
+                } else {
+                    Button("Pas pour moi") { showsDislikeOptions = true }
+                        .font(.footnote)
+                        .foregroundStyle(Color.ink.opacity(0.55))
+                        .buttonStyle(.plain)
+                }
+            }
         }
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .confirmationDialog("Ce défi n'est pas pour toi ?", isPresented: $showsDislikeOptions,
+                            titleVisibility: .visible) {
+            ForEach(Self.dislikeReasons, id: \.self) { reason in
+                Button(reason) { dislike(reason: reason) }
+            }
+            Button("Annuler", role: .cancel) {}
+        } message: {
+            Text("Ta réponse est anonyme et nous aide à choisir les défis.")
+        }
     }
 
     private var attemptsLabel: String {
@@ -149,12 +191,22 @@ struct ContentView: View {
 
     private func attempt() {
         let now = Date.now
+        let tried = challenge
         withAnimation(.easeInOut(duration: 0.4)) {
-            store.attempt(challenge, on: now)
+            store.attempt(tried, on: now)
         }
         burstDate = now
         previewsFullGrowth = false
         syncProgress(duration: 2.2)
+        if let count = communityCount { communityCount = count + 1 }
+        Task { await Community.recordAttempt(challenge: tried, on: now) }
+    }
+
+    private func dislike(reason: String) {
+        let day = today
+        let disliked = challenge
+        dislikedDay = Community.dayKey(day)
+        Task { await Community.recordDislike(challenge: disliked, on: day, reason: reason) }
     }
 
     private func syncProgress(duration: Double = 1.6) {

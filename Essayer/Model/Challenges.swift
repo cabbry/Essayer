@@ -401,7 +401,15 @@ enum Challenges {
         "Pour la nuit la plus longue de l'année, appelle quelqu'un que tu aimes.",
     ]
 
+    /// Les défis retirés à distance (voir `Community`). Un défi retiré est
+    /// remplacé par le défi général suivant.
+    static var disabled: Set<String> {
+        get { Set(UserDefaults.standard.stringArray(forKey: "challenges.disabled") ?? []) }
+        set { UserDefaults.standard.set(Array(newValue).sorted(), forKey: "challenges.disabled") }
+    }
+
     static func forDay(_ date: Date, calendar: Calendar = .current) -> String {
+        let disabled = self.disabled
         let day = calendar.startOfDay(for: date)
         let seasonStart = Season.start(of: day, calendar: calendar)
         let dayInSeason = calendar.dateComponents([.day], from: seasonStart, to: day).day ?? 0
@@ -410,12 +418,17 @@ enum Challenges {
         if dayInSeason % 4 == 0 {
             let pool = seasonal(Season(date: day, calendar: calendar))
             let year = calendar.component(.year, from: seasonStart)
-            return pool[(dayInSeason / 4 + year * 7) % pool.count]
+            let candidate = pool[(dayInSeason / 4 + year * 7) % pool.count]
+            if !disabled.contains(candidate) { return candidate }
         }
 
         let reference = calendar.date(from: DateComponents(year: 2026, month: 1, day: 1))!
         let days = calendar.dateComponents([.day], from: reference, to: day).day ?? 0
         let index = ((days % order.count) + order.count) % order.count
+        for step in 0..<order.count {
+            let candidate = general[order[(index + step) % order.count]]
+            if !disabled.contains(candidate) { return candidate }
+        }
         return general[order[index]]
     }
 

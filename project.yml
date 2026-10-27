@@ -28,6 +28,15 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         ITSAppUsesNonExemptEncryption: false
+    # Base publique CloudKit (Community.swift) : essais anonymes, « Pas pour
+    # moi » et défis retirés. Le profil « Essayer AppStore » doit inclure iCloud.
+    entitlements:
+      path: Essayer/Essayer.entitlements
+      properties:
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.cabbry.essayer
+        com.apple.developer.icloud-services:
+          - CloudKit
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.cabbry.essayer
