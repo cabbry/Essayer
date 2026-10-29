@@ -16,7 +16,9 @@ struct ContentView: View {
     @State private var communityCount: Int?
     /// Les défis retirés à distance : les changer redessine le défi du jour.
     @State private var disabledChallenges = Challenges.disabled
-    @State private var showsDislikeOptions = false
+    /// « Pas pour moi » peut aussi venir du bouton de la notification du soir.
+    @State private var router = AppRouter.shared
+    @State private var showsSettings = false
     /// Le jour où « Pas pour moi » a été envoyé, pour ne le proposer qu'une fois.
     @AppStorage("dislikedDay") private var dislikedDay = ""
 
@@ -51,6 +53,10 @@ struct ContentView: View {
             previewsFullGrowth = false
             syncProgress()
         }
+        // Un essai enregistré depuis la notification fait aussi pousser l'arbre.
+        .onChange(of: seasonAttempts) {
+            syncProgress(duration: 2.2)
+        }
         .task(id: Community.dayKey(today)) {
             await Community.refreshDisabledChallenges()
             disabledChallenges = Challenges.disabled
@@ -63,6 +69,10 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showsHistory) {
             HistoryView()
+                .environment(store)
+        }
+        .sheet(isPresented: $showsSettings) {
+            SettingsView()
                 .environment(store)
         }
         .sensoryFeedback(.success, trigger: store.attempts.count)
@@ -107,6 +117,15 @@ struct ContentView: View {
                     .frame(width: 44, height: 44)
             }
             .accessibilityLabel("Mes essais")
+
+            Button {
+                showsSettings = true
+            } label: {
+                Image(systemName: "gearshape")
+                    .font(.title3)
+                    .frame(width: 40, height: 44)
+            }
+            .accessibilityLabel("Réglages")
         }
         .buttonStyle(.plain)
     }
@@ -157,7 +176,7 @@ struct ContentView: View {
                         .font(.footnote)
                         .foregroundStyle(Color.ink.opacity(0.45))
                 } else {
-                    Button("Pas pour moi") { showsDislikeOptions = true }
+                    Button("Pas pour moi") { router.showsDislikeOptions = true }
                         .font(.footnote)
                         .foregroundStyle(Color.ink.opacity(0.55))
                         .buttonStyle(.plain)
@@ -167,7 +186,7 @@ struct ContentView: View {
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .confirmationDialog("Ce défi n'est pas pour toi ?", isPresented: $showsDislikeOptions,
+        .confirmationDialog("Ce défi n'est pas pour toi ?", isPresented: $router.showsDislikeOptions,
                             titleVisibility: .visible) {
             ForEach(Self.dislikeReasons, id: \.self) { reason in
                 Button(reason) { dislike(reason: reason) }

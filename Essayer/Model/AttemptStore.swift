@@ -5,6 +5,9 @@ import Observation
 /// on ajoute des essais, on n'en retire jamais.
 @Observable
 final class AttemptStore {
+    /// Le carnet de l'appli, partagé avec les boutons des notifications.
+    static let shared = AttemptStore()
+
     private(set) var attempts: [Attempt] = []
 
     @ObservationIgnored private let defaults: UserDefaults

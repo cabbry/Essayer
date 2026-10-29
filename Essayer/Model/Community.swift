@@ -23,8 +23,10 @@ enum Community {
         return String(format: "%04d-%02d-%02d", components.year ?? 0, components.month ?? 0, components.day ?? 0)
     }
 
+    /// Rien n'est envoyé si le partage est coupé dans les Réglages ; le
+    /// compteur et les défis retirés restent lisibles.
     private static func canWrite() async -> Bool {
-        guard isEnabled else { return false }
+        guard isEnabled, ReminderSettings.sharesStatistics else { return false }
         return (try? await container.accountStatus()) == .available
     }
 

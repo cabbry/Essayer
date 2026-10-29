@@ -76,6 +76,18 @@ Le numéro de build est dérivé automatiquement du numéro d'exécution GitHub 
   24 par saison. Un jour sur quatre est un défi de saison, et aucun ne revient
   dans la même saison. Les défis généraux reviennent environ une fois par an.
   Tout le monde a le même défi le même jour.
-- **Une notification arrive chaque matin à 9 h** avec le défi du jour, sauf si
-  l'essai est déjà fait. Les notifications sont programmées pour les 30 jours
-  suivants, et reprogrammées à chaque ouverture de l'appli.
+- **Notifications** : le défi du jour le matin (9 h par défaut) et une relance
+  en fin d'après-midi (17 h par défaut) si l'essai n'est pas fait. La relance
+  porte deux boutons : « J'ai essayé » (enregistre l'essai sans ouvrir
+  l'appli) et « Pas pour moi » (ouvre l'appli sur le choix de la raison).
+  Chaque notification s'active et se règle à l'heure voulue dans l'écran
+  **Réglages** (roue dentée). Elles sont programmées pour les 30 jours
+  suivants, et reprogrammées à chaque ouverture de l'appli ou changement de
+  réglage.
+- **Statistiques anonymes (CloudKit)** : « J'ai essayé » et « Pas pour moi »
+  déposent un enregistrement anonyme (jour, défi, raison) dans la base
+  publique `iCloud.com.cabbry.essayer`. Le compteur « X personnes ont essayé
+  aujourd'hui » s'affiche à partir de 10. Pour retirer un défi sans mise à
+  jour, créer dans la console CloudKit (Production) un enregistrement
+  `DisabledChallenge` dont le champ `challenge` contient le texte exact du
+  défi. Le partage se coupe dans les Réglages.

@@ -2,7 +2,8 @@ import SwiftUI
 
 @main
 struct EssayerApp: App {
-    @State private var store = ScreenshotScene.current?.makeStore() ?? AttemptStore()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    @State private var store = ScreenshotScene.current?.makeStore() ?? AttemptStore.shared
 
     var body: some Scene {
         WindowGroup {
