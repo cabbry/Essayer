@@ -204,7 +204,7 @@ struct ContentView: View {
         case 0: "Ton arbre attend ton premier essai \(realSeason.thisSeason)"
         case 1: "1 essai \(realSeason.thisSeason)"
         case goal...: "\(count) essais \(realSeason.thisSeason) : arbre en pleine forme"
-        default: "\(count) essais \(realSeason.thisSeason) sur \(goal)"
+        default: "\(count) essais \(realSeason.thisSeason)"
         }
     }
 
