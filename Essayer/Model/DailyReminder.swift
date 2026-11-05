@@ -20,8 +20,8 @@ enum DailyReminder {
     private static let identifierPrefix = "daily-challenge-"
 
     static func registerCategories() {
-        let tried = UNNotificationAction(identifier: triedAction, title: "J'ai essayé", options: [])
-        let dislike = UNNotificationAction(identifier: dislikeAction, title: "Pas pour moi", options: [.foreground])
+        let tried = UNNotificationAction(identifier: triedAction, title: tr("J'ai essayé", "I tried"), options: [])
+        let dislike = UNNotificationAction(identifier: dislikeAction, title: tr("Pas pour moi", "Not for me"), options: [.foreground])
         let evening = UNNotificationCategory(identifier: eveningCategory, actions: [tried, dislike],
                                              intentIdentifiers: [], options: [])
         UNUserNotificationCenter.current().setNotificationCategories([evening])
@@ -48,13 +48,13 @@ enum DailyReminder {
             let challenge = Challenges.forDay(day, calendar: calendar)
 
             if morning {
-                await schedule(on: day, minutes: ReminderSettings.morningMinutes, title: "Le défi du jour",
-                               body: challenge, category: nil, challenge: challenge,
+                await schedule(on: day, minutes: ReminderSettings.morningMinutes, title: tr("Le défi du jour", "Today's challenge"),
+                               body: Challenges.localized(challenge), category: nil, challenge: challenge,
                                now: now, center: center, calendar: calendar)
             }
             if evening {
-                await schedule(on: day, minutes: ReminderSettings.eveningMinutes, title: "Alors, tu as essayé ?",
-                               body: challenge, category: eveningCategory, challenge: challenge,
+                await schedule(on: day, minutes: ReminderSettings.eveningMinutes, title: tr("Alors, tu as essayé ?", "So, did you try?"),
+                               body: Challenges.localized(challenge), category: eveningCategory, challenge: challenge,
                                now: now, center: center, calendar: calendar)
             }
         }

@@ -37,10 +37,10 @@ enum Season: Int, CaseIterable, Hashable {
     /// « ce printemps », « cet été »… pour le compteur d'essais.
     var thisSeason: String {
         switch self {
-        case .spring: "ce printemps"
-        case .summer: "cet été"
-        case .autumn: "cet automne"
-        case .winter: "cet hiver"
+        case .spring: tr("ce printemps", "this spring")
+        case .summer: tr("cet été", "this summer")
+        case .autumn: tr("cet automne", "this autumn")
+        case .winter: tr("cet hiver", "this winter")
         }
     }
 
@@ -69,10 +69,10 @@ enum Season: Int, CaseIterable, Hashable {
 
     var name: String {
         switch self {
-        case .spring: "Printemps"
-        case .summer: "Été"
-        case .autumn: "Automne"
-        case .winter: "Hiver"
+        case .spring: tr("Printemps", "Spring")
+        case .summer: tr("Été", "Summer")
+        case .autumn: tr("Automne", "Autumn")
+        case .winter: tr("Hiver", "Winter")
         }
     }
 

@@ -10,9 +10,9 @@ struct HistoryView: View {
             Group {
                 if store.attempts.isEmpty {
                     ContentUnavailableView(
-                        "Pas encore d'essai",
+                        tr("Pas encore d'essai", "No tries yet"),
                         systemImage: "leaf",
-                        description: Text("Chaque essai fera fleurir ton arbre.")
+                        description: Text(tr("Chaque essai fera fleurir ton arbre.", "Every try will make your tree bloom."))
                     )
                 } else {
                     List(Array(store.attempts.reversed())) { attempt in
@@ -20,17 +20,17 @@ struct HistoryView: View {
                             Text(attempt.date, format: .dateTime.weekday(.wide).day().month(.wide).year())
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
-                            Text(attempt.challenge)
+                            Text(Challenges.localized(attempt.challenge))
                                 .font(.system(.body, design: .serif))
                         }
                         .padding(.vertical, 4)
                     }
                 }
             }
-            .navigationTitle("Mes essais")
+            .navigationTitle(tr("Mes essais", "My tries"))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Fermer") { dismiss() }
+                    Button(tr("Fermer", "Close")) { dismiss() }
                 }
             }
         }

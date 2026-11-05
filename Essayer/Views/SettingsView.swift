@@ -13,49 +13,56 @@ struct SettingsView: View {
     @AppStorage(ReminderSettings.eveningMinutesKey) private var eveningMinutes = ReminderSettings.defaultEveningMinutes
     @AppStorage(ReminderSettings.sharesStatisticsKey) private var sharesStatistics = true
 
-    private static let privacyURL = URL(string: "https://cabbry.github.io/essayer-site/privacy.html")!
-    private static let supportURL = URL(string: "https://cabbry.github.io/essayer-site/#support")!
+    private static let privacyURL = URL(string: tr("https://cabbry.github.io/essayer-site/privacy.html",
+                                                   "https://cabbry.github.io/essayer-site/privacy-en.html"))!
+    private static let supportURL = URL(string: tr("https://cabbry.github.io/essayer-site/#support",
+                                                   "https://cabbry.github.io/essayer-site/en.html#support"))!
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    Toggle("Le défi du jour", isOn: $morningEnabled)
+                    Toggle(tr("Le défi du jour", "Today's challenge"), isOn: $morningEnabled)
                     if morningEnabled {
-                        DatePicker("Heure", selection: time($morningMinutes), displayedComponents: .hourAndMinute)
+                        DatePicker(tr("Heure", "Time"), selection: time($morningMinutes),
+                                   displayedComponents: .hourAndMinute)
                     }
                 } header: {
-                    Text("Le matin")
+                    Text(tr("Le matin", "Morning"))
                 } footer: {
-                    Text("Le défi du jour, pour avoir la journée devant toi.")
+                    Text(tr("Le défi du jour, pour avoir la journée devant toi.",
+                            "Today's challenge, with the whole day ahead of you."))
                 }
 
                 Section {
-                    Toggle("Alors, tu as essayé ?", isOn: $eveningEnabled)
+                    Toggle(tr("Alors, tu as essayé ?", "So, did you try?"), isOn: $eveningEnabled)
                     if eveningEnabled {
-                        DatePicker("Heure", selection: time($eveningMinutes), displayedComponents: .hourAndMinute)
+                        DatePicker(tr("Heure", "Time"), selection: time($eveningMinutes),
+                                   displayedComponents: .hourAndMinute)
                     }
                 } header: {
-                    Text("La relance")
+                    Text(tr("La relance", "Reminder"))
                 } footer: {
-                    Text("Seulement si le défi n'est pas encore fait. Tu peux répondre depuis la notification : « J'ai essayé » ou « Pas pour moi ».")
+                    Text(tr("Seulement si le défi n'est pas encore fait. Tu peux répondre depuis la notification : « J'ai essayé » ou « Pas pour moi ».",
+                            "Only if today's challenge isn't done yet. You can answer right from the notification: \"I tried\" or \"Not for me\"."))
                 }
 
                 Section {
-                    Toggle("Partager des statistiques anonymes", isOn: $sharesStatistics)
+                    Toggle(tr("Partager des statistiques anonymes", "Share anonymous statistics"), isOn: $sharesStatistics)
                 } footer: {
-                    Text("Le jour, le défi et ta réponse, sans rien qui t'identifie, via iCloud. C'est ce qui permet d'afficher combien de personnes ont essayé et de retirer les défis qui ne plaisent pas.")
+                    Text(tr("Le jour, le défi et ta réponse, sans rien qui t'identifie, via iCloud. C'est ce qui permet d'afficher combien de personnes ont essayé et de retirer les défis qui ne plaisent pas.",
+                            "The day, the challenge and your answer, with nothing that identifies you, through iCloud. This is what shows how many people tried and lets us remove challenges people don't like."))
                 }
 
                 Section {
-                    Link("Aide et contact", destination: Self.supportURL)
-                    Link("Politique de confidentialité", destination: Self.privacyURL)
+                    Link(tr("Aide et contact", "Help and contact"), destination: Self.supportURL)
+                    Link(tr("Politique de confidentialité", "Privacy policy"), destination: Self.privacyURL)
                 }
             }
-            .navigationTitle("Réglages")
+            .navigationTitle(tr("Réglages", "Settings"))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Fermer") { dismiss() }
+                    Button(tr("Fermer", "Close")) { dismiss() }
                 }
             }
             .task(id: "\(morningEnabled)-\(morningMinutes)-\(eveningEnabled)-\(eveningMinutes)") {

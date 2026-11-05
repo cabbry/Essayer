@@ -22,7 +22,14 @@ struct ContentView: View {
     /// Le jour où « Pas pour moi » a été envoyé, pour ne le proposer qu'une fois.
     @AppStorage("dislikedDay") private var dislikedDay = ""
 
-    private static let dislikeReasons = ["Trop difficile", "Pas mon truc", "Mal formulé", "Pas le bon moment"]
+    /// La raison est enregistrée en français dans CloudKit (stable d'une langue
+    /// à l'autre), et affichée dans la langue de l'utilisateur.
+    private static let dislikeReasons: [(id: String, label: String)] = [
+        ("Trop difficile", tr("Trop difficile", "Too hard")),
+        ("Pas mon truc", tr("Pas mon truc", "Not my thing")),
+        ("Mal formulé", tr("Mal formulé", "Badly worded")),
+        ("Pas le bon moment", tr("Pas le bon moment", "Bad timing")),
+    ]
 
     private var realSeason: Season { Season(date: today) }
     private var season: Season { previewSeason ?? realSeason }
@@ -84,8 +91,8 @@ struct ContentView: View {
                 Text("Essayer")
                     .font(.system(.largeTitle, design: .serif).weight(.semibold))
                     .onLongPressGesture(perform: toggleFullGrowthPreview)
-                    .accessibilityHint("Appui long pour voir l'arbre au maximum de la saison.")
-                Text(previewsFullGrowth ? "Aperçu : l'arbre au bout de 30 essais" : attemptsLabel)
+                    .accessibilityHint(tr("Appui long pour voir l'arbre au maximum de la saison.", "Long-press to preview the tree at full growth."))
+                Text(previewsFullGrowth ? tr("Aperçu : l'arbre au bout de 30 essais", "Preview: the tree after 30 tries") : attemptsLabel)
                     .font(.system(.subheadline, design: .serif))
                     .foregroundStyle(previewsFullGrowth ? Color.vermilion : Color.ink.opacity(0.6))
             }
@@ -100,14 +107,15 @@ struct ContentView: View {
                         .font(.caption2)
                         .foregroundStyle(Color.ink.opacity(0.6))
                     if previewSeason != nil {
-                        Text("aperçu")
+                        Text(tr("aperçu", "preview"))
                             .font(.system(size: 9, design: .serif).italic())
                             .foregroundStyle(Color.vermilion)
                     }
                 }
                 .frame(minWidth: 56)
             }
-            .accessibilityLabel("Saison : \(season.name). Toucher pour voir la suivante.")
+            .accessibilityLabel(tr("Saison : \(season.name). Toucher pour voir la suivante.",
+                                   "Season: \(season.name). Tap to preview the next one."))
 
             Button {
                 showsHistory = true
@@ -116,7 +124,7 @@ struct ContentView: View {
                     .font(.title3)
                     .frame(width: 44, height: 44)
             }
-            .accessibilityLabel("Mes essais")
+            .accessibilityLabel(tr("Mes essais", "My tries"))
 
             Button {
                 showsSettings = true
@@ -125,31 +133,31 @@ struct ContentView: View {
                     .font(.title3)
                     .frame(width: 40, height: 44)
             }
-            .accessibilityLabel("Réglages")
+            .accessibilityLabel(tr("Réglages", "Settings"))
         }
         .buttonStyle(.plain)
     }
 
     private var card: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("DÉFI DU JOUR")
+            Text(tr("DÉFI DU JOUR", "TODAY'S CHALLENGE"))
                 .font(.caption.weight(.semibold))
                 .tracking(1.5)
                 .foregroundStyle(Color.ink.opacity(0.55))
 
-            Text(challenge)
+            Text(Challenges.localized(challenge))
                 .font(.system(.title3, design: .serif))
                 .fixedSize(horizontal: false, vertical: true)
 
             if triedToday {
-                Label("Tu as essayé aujourd'hui. Reviens demain.", systemImage: "leaf")
+                Label(tr("Tu as essayé aujourd'hui. Reviens demain.", "You tried today. Come back tomorrow."), systemImage: "leaf")
                     .font(.system(.body, design: .serif).weight(.medium))
                     .foregroundStyle(Color.vermilion)
                     .padding(.vertical, 6)
                     .transition(.opacity)
             } else {
                 Button(action: attempt) {
-                    Text("J'ai essayé")
+                    Text(tr("J'ai essayé", "I tried"))
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 6)
@@ -161,22 +169,23 @@ struct ContentView: View {
             }
 
             if let count = communityCount, count >= Community.visibleCountThreshold {
-                Label("\(count) personnes ont essayé aujourd'hui", systemImage: "person.2")
+                Label(tr("\(count) personnes ont essayé aujourd'hui", "\(count) people tried today"),
+                      systemImage: "person.2")
                     .font(.footnote)
                     .foregroundStyle(Color.ink.opacity(0.6))
             }
 
             HStack(alignment: .firstTextBaseline) {
-                Text("Essayer, c'est déjà réussir.")
+                Text(tr("Essayer, c'est déjà réussir.", "Trying is already succeeding."))
                     .font(.system(.footnote, design: .serif).italic())
                     .foregroundStyle(Color.ink.opacity(0.55))
                 Spacer(minLength: 8)
                 if dislikedDay == Community.dayKey(today) {
-                    Text("Merci, c'est noté")
+                    Text(tr("Merci, c'est noté", "Thanks, noted"))
                         .font(.footnote)
                         .foregroundStyle(Color.ink.opacity(0.45))
                 } else {
-                    Button("Pas pour moi") { router.showsDislikeOptions = true }
+                    Button(tr("Pas pour moi", "Not for me")) { router.showsDislikeOptions = true }
                         .font(.footnote)
                         .foregroundStyle(Color.ink.opacity(0.55))
                         .buttonStyle(.plain)
@@ -186,14 +195,14 @@ struct ContentView: View {
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .confirmationDialog("Ce défi n'est pas pour toi ?", isPresented: $router.showsDislikeOptions,
+        .confirmationDialog(tr("Ce défi n'est pas pour toi ?", "Not your kind of challenge?"), isPresented: $router.showsDislikeOptions,
                             titleVisibility: .visible) {
-            ForEach(Self.dislikeReasons, id: \.self) { reason in
-                Button(reason) { dislike(reason: reason) }
+            ForEach(Self.dislikeReasons, id: \.id) { reason in
+                Button(reason.label) { dislike(reason: reason.id) }
             }
-            Button("Annuler", role: .cancel) {}
+            Button(tr("Annuler", "Cancel"), role: .cancel) {}
         } message: {
-            Text("Ta réponse est anonyme et nous aide à choisir les défis.")
+            Text(tr("Ta réponse est anonyme et nous aide à choisir les défis.", "Your answer is anonymous and helps us choose the challenges."))
         }
     }
 
@@ -201,10 +210,12 @@ struct ContentView: View {
         let count = seasonAttempts
         let goal = Int(TreeModel.fullGrowthAttempts)
         return switch count {
-        case 0: "Ton arbre attend ton premier essai \(realSeason.thisSeason)"
-        case 1: "1 essai \(realSeason.thisSeason)"
-        case goal...: "\(count) essais \(realSeason.thisSeason) : arbre en pleine forme"
-        default: "\(count) essais \(realSeason.thisSeason)"
+        case 0: tr("Ton arbre attend ton premier essai \(realSeason.thisSeason)",
+                   "Your tree is waiting for your first try \(realSeason.thisSeason)")
+        case 1: tr("1 essai \(realSeason.thisSeason)", "1 try \(realSeason.thisSeason)")
+        case goal...: tr("\(count) essais \(realSeason.thisSeason) : arbre en pleine forme",
+                         "\(count) tries \(realSeason.thisSeason): tree in full bloom")
+        default: tr("\(count) essais \(realSeason.thisSeason)", "\(count) tries \(realSeason.thisSeason)")
         }
     }
 

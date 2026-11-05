@@ -22,6 +22,7 @@ targets:
         CFBundleDisplayName: Essayer
         CFBundleLocalizations:
           - fr
+          - en
         CFBundleShortVersionString: "1.0.0"
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}

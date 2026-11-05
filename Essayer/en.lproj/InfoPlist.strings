@@ -1,0 +1,2 @@
+/* Declares the English localization (the app's strings live in Lang.swift). */
+"CFBundleDisplayName" = "Essayer";
