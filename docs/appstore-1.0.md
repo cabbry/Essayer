@@ -49,6 +49,48 @@ RESPECTUEUX DE TA VIE PRIVÉE
 Pas de compte, pas de publicité, pas de suivi. Tes essais restent sur ton iPhone ; seules des statistiques anonymes sont partagées, via iCloud.
 ```
 
+## Fiche anglaise (English, U.S.)
+
+| Champ | Valeur |
+|---|---|
+| Name | Essayer |
+| Subtitle | One small challenge a day |
+| Privacy Policy URL | https://cabbry.github.io/essayer-site/privacy-en.html |
+| Support / Marketing URL | https://cabbry.github.io/essayer-site/en.html |
+| Keywords | challenge,daily,kindness,gratitude,habit,cherry,blossom,japan,zen,wellbeing,seasons,mindful |
+
+Promotional text :
+
+```
+Every day, one small challenge for others and for yourself. Say "I tried" and watch your cherry tree bloom, season after season.
+```
+
+Description :
+
+```
+Trying is already succeeding.
+
+Every day, Essayer gives you one small challenge, often for someone else: write a note to someone you like, call a friend you've lost touch with, thank someone for something specific, give a flower… Here, you don't tick "done". You simply say "I tried".
+
+A CHERRY TREE THAT GROWS WITH YOU
+With every try, your tree grows and blossoms, and vines climb along the edges of the screen. The tree starts over as a young sprout at the beginning of each season and reaches full bloom after 30 tries.
+
+THE GARDEN FOLLOWS THE SEASONS
+Cherry blossoms in spring, green leaves in summer, red maples in autumn, snow in winter. The garden changes with the calendar, and seasonal challenges join the everyday ones.
+
+HUNDREDS OF SMALL CHALLENGES
+Simple gestures that take a few minutes, with no equipment and no money: say thank you, check in on someone, share a memory, listen, slow down, dare. Everyone gets the same challenge on the same day.
+
+NO PRESSURE
+Nothing is lost if you miss a day: the tree never wilts. One challenge a day, a gentle reminder in the morning and a follow-up in the late afternoon if you want.
+
+TOGETHER
+See how many people tried today's challenge, and tell us when a challenge isn't for you.
+
+RESPECTS YOUR PRIVACY
+No account, no ads, no tracking. Your tries stay on your iPhone; only anonymous statistics are shared, through iCloud.
+```
+
 ## Mots-clés (100 max, séparés par des virgules sans espace)
 
 ```

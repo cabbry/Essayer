@@ -65,6 +65,13 @@ jobs:
             --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
           xcrun simctl install "$UDID" "$APP"
 
+          # Échauffement : un premier lancement à vide laisse passer les
+          # notifications système du premier démarrage (Apple Intelligence…),
+          # qui sinon s'affichent par-dessus la première capture.
+          xcrun simctl launch "$UDID" com.cabbry.essayer -screenshot spring
+          sleep 45
+          xcrun simctl terminate "$UDID" com.cabbry.essayer || true
+
           for LNG in fr en; do
             mkdir -p "shots/$LNG"
             LOCALE=$([ "$LNG" = fr ] && echo fr_FR || echo en_US)
