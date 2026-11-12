@@ -5,7 +5,7 @@ import SwiftUI
 enum Season: Int, CaseIterable, Hashable {
     case spring, summer, autumn, winter
 
-    init(date: Date, calendar: Calendar = .current) {
+    init(date: Date, calendar: Calendar = .gregorian) {
         switch calendar.component(.month, from: date) {
         case 3...5: self = .spring
         case 6...8: self = .summer
@@ -16,7 +16,7 @@ enum Season: Int, CaseIterable, Hashable {
 
     /// Le premier jour de la saison qui contient `date`. L'arbre repart de
     /// zéro à chaque nouvelle saison.
-    static func start(of date: Date, calendar: Calendar = .current) -> Date {
+    static func start(of date: Date, calendar: Calendar = .gregorian) -> Date {
         let year = calendar.component(.year, from: date)
         let month = calendar.component(.month, from: date)
         let (startYear, startMonth): (Int, Int) = switch month {

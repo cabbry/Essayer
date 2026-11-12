@@ -21,12 +21,12 @@ final class AttemptStore {
         }
     }
 
-    func hasAttempted(on day: Date, calendar: Calendar = .current) -> Bool {
+    func hasAttempted(on day: Date, calendar: Calendar = .gregorian) -> Bool {
         attempts.contains { calendar.isDate($0.date, inSameDayAs: day) }
     }
 
     /// Les essais de la saison en cours : ce sont eux qui font pousser l'arbre.
-    func attempts(inSeasonOf day: Date, calendar: Calendar = .current) -> [Attempt] {
+    func attempts(inSeasonOf day: Date, calendar: Calendar = .gregorian) -> [Attempt] {
         let start = Season.start(of: day, calendar: calendar)
         return attempts.filter { $0.date >= start }
     }

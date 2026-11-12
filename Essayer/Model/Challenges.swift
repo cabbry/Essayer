@@ -408,7 +408,7 @@ enum Challenges {
         set { UserDefaults.standard.set(Array(newValue).sorted(), forKey: "challenges.disabled") }
     }
 
-    static func forDay(_ date: Date, calendar: Calendar = .current) -> String {
+    static func forDay(_ date: Date, calendar: Calendar = .gregorian) -> String {
         let disabled = self.disabled
         let day = calendar.startOfDay(for: date)
         let seasonStart = Season.start(of: day, calendar: calendar)

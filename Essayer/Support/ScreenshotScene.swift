@@ -20,7 +20,7 @@ struct ScreenshotScene {
     }()
 
     private static func day(_ year: Int, _ month: Int, _ day: Int) -> Date {
-        Calendar.current.date(from: DateComponents(year: year, month: month, day: day, hour: 10)) ?? .now
+        Calendar.gregorian.date(from: DateComponents(year: year, month: month, day: day, hour: 10)) ?? .now
     }
 
     private static let scenes: [String: ScreenshotScene] = [
@@ -38,7 +38,7 @@ struct ScreenshotScene {
         UserDefaults.standard.removePersistentDomain(forName: suite)
         let store = AttemptStore(defaults: UserDefaults(suiteName: suite) ?? .standard)
 
-        let calendar = Calendar.current
+        let calendar = Calendar.gregorian
         let start = Season.start(of: date, calendar: calendar)
         let today = calendar.startOfDay(for: date)
         let daysBefore = calendar.dateComponents([.day], from: start, to: today).day ?? 0

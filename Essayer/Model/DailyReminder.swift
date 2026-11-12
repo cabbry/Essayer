@@ -27,7 +27,7 @@ enum DailyReminder {
         UNUserNotificationCenter.current().setNotificationCategories([evening])
     }
 
-    static func refresh(alreadyTriedToday: Bool, calendar: Calendar = .current) async {
+    static func refresh(alreadyTriedToday: Bool, calendar: Calendar = .gregorian) async {
         let center = UNUserNotificationCenter.current()
         let pending = await center.pendingNotificationRequests()
         let previous = pending.map(\.identifier).filter { $0.hasPrefix(identifierPrefix) }
@@ -77,7 +77,10 @@ enum DailyReminder {
 
         let identifier = identifierPrefix
             + "\(components.year ?? 0)-\(components.month ?? 0)-\(components.day ?? 0)-\(minutes)"
-        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+        // Le déclencheur lit ses composantes dans le calendrier de l'appareil,
+        // qui n'est pas forcément grégorien : on les recalcule depuis l'instant.
+        let fireComponents = Calendar.current.dateComponents([.era, .year, .month, .day, .hour, .minute], from: fireDate)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: fireComponents, repeats: false)
         try? await center.add(UNNotificationRequest(identifier: identifier, content: content, trigger: trigger))
     }
 }

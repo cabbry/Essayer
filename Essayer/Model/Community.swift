@@ -18,7 +18,7 @@ enum Community {
     private static var database: CKDatabase { container.publicCloudDatabase }
 
     /// Le jour sous la forme « 2026-10-27 », identique pour tout le monde.
-    static func dayKey(_ date: Date, calendar: Calendar = .current) -> String {
+    static func dayKey(_ date: Date, calendar: Calendar = .gregorian) -> String {
         let components = calendar.dateComponents([.year, .month, .day], from: date)
         return String(format: "%04d-%02d-%02d", components.year ?? 0, components.month ?? 0, components.day ?? 0)
     }
