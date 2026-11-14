@@ -12,6 +12,7 @@ extension Challenges {
     private static let englishByFrench: [String: String] = {
         var map: [String: String] = [:]
         for (french, english) in zip(general, englishGeneral) { map[french] = english }
+        for (french, english) in zip(replacements, englishReplacements) { map[french] = english }
         for season in Season.allCases {
             for (french, english) in zip(seasonal(season), englishSeasonal(season)) { map[french] = english }
         }
@@ -302,6 +303,39 @@ extension Challenges {
         "Walk somewhere you usually go by car or public transport.",
         "Remember the name of everyone you meet today.",
         "Thank the kitchen team at a restaurant or canteen.",
+    ]
+
+    static let englishReplacements: [String] = [
+        "Send someone a message telling them why you appreciate them.",
+        "Give a sincere compliment to the next person you talk to.",
+        "Smile at three people today.",
+        "Write down three things you're grateful for today.",
+        "Check in on someone who's going through a hard time.",
+        "Thank someone for a favor they did for you, even a small one.",
+        "Listen to someone all the way through without interrupting.",
+        "Send a photo that reminds you of someone to that person.",
+        "Ask someone about what they're passionate about.",
+        "Say \"thank you\" while looking the person in the eye.",
+        "Write a kind note and leave it where someone will find it.",
+        "Share a happy memory with someone who was there.",
+        "Ask someone how they're doing, and really wait for the answer.",
+        "Forgive someone a small thing, without telling them.",
+        "Congratulate someone on something they recently achieved.",
+        "Send a voice message instead of a text to someone you love.",
+        "Recommend a book, film or song that moved you to someone.",
+        "Tell someone what they taught you, even without knowing it.",
+        "Take five minutes to breathe calmly, away from screens.",
+        "Write to someone you haven't dared contact in a long time.",
+        "Thank someone people often forget to thank.",
+        "Carefully answer a message you haven't replied to yet.",
+        "Tell someone you're proud of them.",
+        "Offer to help someone with a small thing before they ask.",
+        "Learn the name of someone you often run into, and use it.",
+        "Send an encouraging message to someone who's preparing for something.",
+        "Tell someone a quality you see in them.",
+        "Tell someone about something that made you feel good today.",
+        "Do something kind for yourself, guilt-free.",
+        "Be the first to say hello to someone you don't know.",
     ]
 
     private static let englishSpring: [String] = [

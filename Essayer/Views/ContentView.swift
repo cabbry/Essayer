@@ -21,10 +21,15 @@ struct ContentView: View {
     @State private var showsSettings = false
     /// Le jour où « Pas pour moi » a été envoyé, pour ne le proposer qu'une fois.
     @AppStorage("dislikedDay") private var dislikedDay = ""
+    /// Le jour où le défi a été déclaré « Pas applicable » : le défi de
+    /// remplacement prend sa place jusqu'au soir.
+    @AppStorage(Challenges.replacedDayKey) private var replacedDay = ""
 
     /// La raison est enregistrée en français dans CloudKit (stable d'une langue
     /// à l'autre), et affichée dans la langue de l'utilisateur.
+    private static let notApplicable = "Pas applicable"
     private static let dislikeReasons: [(id: String, label: String)] = [
+        (notApplicable, tr("Pas applicable : un autre défi", "Doesn't apply: another challenge")),
         ("Trop difficile", tr("Trop difficile", "Too hard")),
         ("Pas mon truc", tr("Pas mon truc", "Not my thing")),
         ("Mal formulé", tr("Mal formulé", "Badly worded")),
@@ -33,7 +38,10 @@ struct ContentView: View {
 
     private var realSeason: Season { Season(date: today) }
     private var season: Season { previewSeason ?? realSeason }
-    private var challenge: String { Challenges.forDay(today) }
+    private var isReplaced: Bool { replacedDay == Community.dayKey(today) }
+    private var challenge: String {
+        isReplaced ? Challenges.replacement(forDay: today) : Challenges.forDay(today)
+    }
     private var triedToday: Bool { store.hasAttempted(on: today) }
     private var seasonAttempts: Int { store.attempts(inSeasonOf: today).count }
 
@@ -69,7 +77,7 @@ struct ContentView: View {
             disabledChallenges = Challenges.disabled
             communityCount = await Community.attemptCount(on: today)
         }
-        .task(id: "\(triedToday)-\(Community.dayKey(today))-\(disabledChallenges.count)") {
+        .task(id: "\(triedToday)-\(isReplaced)-\(Community.dayKey(today))-\(disabledChallenges.count)") {
             // Pas de demande d'autorisation par-dessus les captures App Store.
             guard ScreenshotScene.current == nil else { return }
             await DailyReminder.refresh(alreadyTriedToday: triedToday)
@@ -140,7 +148,7 @@ struct ContentView: View {
 
     private var card: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(tr("DÉFI DU JOUR", "TODAY'S CHALLENGE"))
+            Text(isReplaced ? tr("DÉFI DE REMPLACEMENT", "REPLACEMENT CHALLENGE") : tr("DÉFI DU JOUR", "TODAY'S CHALLENGE"))
                 .font(.caption.weight(.semibold))
                 .tracking(1.5)
                 .foregroundStyle(Color.ink.opacity(0.55))
@@ -197,7 +205,8 @@ struct ContentView: View {
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
         .confirmationDialog(tr("Ce défi n'est pas pour toi ?", "Not your kind of challenge?"), isPresented: $router.showsDislikeOptions,
                             titleVisibility: .visible) {
-            ForEach(Self.dislikeReasons, id: \.id) { reason in
+            // Une fois l'essai fait, un remplaçant n'aurait plus de sens.
+            ForEach(Self.dislikeReasons.filter { !triedToday || $0.id != Self.notApplicable }, id: \.id) { reason in
                 Button(reason.label) { dislike(reason: reason.id) }
             }
             Button(tr("Annuler", "Cancel"), role: .cancel) {}
@@ -236,6 +245,9 @@ struct ContentView: View {
         let day = today
         let disliked = challenge
         dislikedDay = Community.dayKey(day)
+        if reason == Self.notApplicable && !triedToday {
+            withAnimation(.easeInOut(duration: 0.4)) { replacedDay = Community.dayKey(day) }
+        }
         Task { await Community.recordDislike(challenge: disliked, on: day, reason: reason) }
     }
 

@@ -45,7 +45,7 @@ enum DailyReminder {
         for offset in 0..<daysAhead {
             if offset == 0 && alreadyTriedToday { continue }
             guard let day = calendar.date(byAdding: .day, value: offset, to: today) else { continue }
-            let challenge = Challenges.forDay(day, calendar: calendar)
+            let challenge = Challenges.current(forDay: day, calendar: calendar)
 
             if morning {
                 await schedule(on: day, minutes: ReminderSettings.morningMinutes, title: tr("Le défi du jour", "Today's challenge"),

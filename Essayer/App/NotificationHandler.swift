@@ -30,7 +30,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
                                 didReceive response: UNNotificationResponse) async {
         let info = response.notification.request.content.userInfo
         let challenge = info[DailyReminder.challengeKey] as? String
-            ?? Challenges.forDay(response.notification.date)
+            ?? Challenges.current(forDay: response.notification.date)
 
         switch response.actionIdentifier {
         case DailyReminder.triedAction:

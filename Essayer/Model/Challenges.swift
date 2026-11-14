@@ -284,6 +284,42 @@ enum Challenges {
         "Remercie l'équipe en cuisine, au restaurant ou à la cantine.",
     ]
 
+    /// Les défis de remplacement, proposés quand le défi du jour n'est « Pas
+    /// applicable ». Ils doivent être faisables par tout le monde, partout :
+    /// seul, sans travail, sans transport, sans enfant ni animal.
+    static let replacements: [String] = [
+        "Envoie un message à quelqu'un pour lui dire pourquoi tu l'apprécies.",
+        "Fais un compliment sincère à la prochaine personne à qui tu parles.",
+        "Souris à trois personnes aujourd'hui.",
+        "Écris trois choses pour lesquelles tu es reconnaissant aujourd'hui.",
+        "Prends des nouvelles de quelqu'un qui traverse un moment difficile.",
+        "Remercie quelqu'un pour un service qu'il t'a rendu, même petit.",
+        "Écoute quelqu'un jusqu'au bout sans l'interrompre.",
+        "Envoie une photo qui te fait penser à quelqu'un, à cette personne.",
+        "Pose une question à quelqu'un sur ce qui le passionne.",
+        "Dis « merci » en regardant la personne dans les yeux.",
+        "Écris un mot gentil et laisse-le là où quelqu'un le trouvera.",
+        "Partage un souvenir heureux avec quelqu'un qui y était.",
+        "Demande à quelqu'un comment il va, et attends vraiment la réponse.",
+        "Pardonne une petite chose à quelqu'un, sans le lui dire.",
+        "Félicite quelqu'un pour une chose qu'il a réussie récemment.",
+        "Envoie un message vocal plutôt qu'un texte à quelqu'un que tu aimes.",
+        "Recommande à quelqu'un un livre, un film ou une chanson qui t'a touché.",
+        "Dis à quelqu'un ce qu'il t'a appris, même sans le savoir.",
+        "Prends cinq minutes pour respirer calmement, sans écran.",
+        "Écris à quelqu'un que tu n'oses plus contacter depuis longtemps.",
+        "Remercie quelqu'un qu'on oublie souvent de remercier.",
+        "Réponds avec soin à un message auquel tu n'as pas encore répondu.",
+        "Dis à quelqu'un que tu es fier ou fière de lui ou d'elle.",
+        "Offre ton aide à quelqu'un pour une petite chose, sans attendre qu'on te la demande.",
+        "Note le prénom de quelqu'un que tu croises souvent, et utilise-le.",
+        "Envoie un message d'encouragement à quelqu'un qui prépare quelque chose.",
+        "Dis à quelqu'un une qualité que tu vois chez lui ou chez elle.",
+        "Raconte à quelqu'un une chose qui t'a fait du bien aujourd'hui.",
+        "Fais une chose gentille pour toi-même, sans culpabiliser.",
+        "Dis bonjour en premier à quelqu'un que tu ne connais pas.",
+    ]
+
     static func seasonal(_ season: Season) -> [String] {
         switch season {
         case .spring: spring
@@ -430,6 +466,36 @@ enum Challenges {
             if !disabled.contains(candidate) { return candidate }
         }
         return general[order[index]]
+    }
+
+    /// Le défi de remplacement de ce jour, le même pour tout le monde.
+    static func replacement(forDay date: Date, calendar: Calendar = .gregorian) -> String {
+        let disabled = self.disabled
+        let day = calendar.startOfDay(for: date)
+        let reference = calendar.date(from: DateComponents(year: 2026, month: 1, day: 1))!
+        let days = calendar.dateComponents([.day], from: reference, to: day).day ?? 0
+        let index = ((days % replacements.count) + replacements.count) % replacements.count
+        for step in 0..<replacements.count {
+            let candidate = replacements[(index + step) % replacements.count]
+            if !disabled.contains(candidate) { return candidate }
+        }
+        return replacements[index]
+    }
+
+    /// Le jour (au format `Community.dayKey`) où le défi a été déclaré « Pas
+    /// applicable » : ce jour-là, c'est le défi de remplacement qui compte.
+    static let replacedDayKey = "challenges.replacedDay"
+
+    static func isReplaced(on date: Date, calendar: Calendar = .gregorian) -> Bool {
+        UserDefaults.standard.string(forKey: replacedDayKey) == Community.dayKey(date, calendar: calendar)
+    }
+
+    /// Le défi que l'utilisateur a vraiment ce jour-là : celui du jour, ou son
+    /// remplaçant s'il l'a déclaré « Pas applicable ».
+    static func current(forDay date: Date, calendar: Calendar = .gregorian) -> String {
+        isReplaced(on: date, calendar: calendar)
+            ? replacement(forDay: date, calendar: calendar)
+            : forDay(date, calendar: calendar)
     }
 
     private static let order: [Int] = {
