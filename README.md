@@ -1,6 +1,6 @@
 # Essayer
 
-Une idée d'application de Kyan Khojandi : chaque jour, un petit défi, souvent
+L'idée vient d'une vidéo de Kyan Khojandi : chaque jour, un petit défi, souvent
 tourné vers les autres (écrire un mot à quelqu'un, appeler une personne perdue
 de vue…). On ne coche pas « réussi », on dit **« J'ai essayé »**, parce
 qu'essayer, c'est déjà une forme de réussite.
@@ -91,3 +91,9 @@ Le numéro de build est dérivé automatiquement du numéro d'exécution GitHub 
   jour, créer dans la console CloudKit (Production) un enregistrement
   `DisabledChallenge` dont le champ `challenge` contient le texte exact du
   défi. Le partage se coupe dans les Réglages.
+
+## Licence
+
+Le code est sous licence [MIT](LICENSE). Le nom « Essayer » et l'icône de
+l'appli ne sont pas concernés : une version dérivée publiée sur l'App Store
+doit porter un autre nom et une autre icône.

@@ -145,8 +145,7 @@ The app asks for permission to send local notifications: the challenge of the da
 Thank you for the review!
 ```
 
-## À ne pas mettre dans la fiche
+## Origine de l'idée
 
-L'idée vient d'une vidéo de Kyan Khojandi. Ne pas citer son nom ni utiliser
-son image, sa voix ou la vidéo dans la fiche ou la communication sans son
-accord écrit.
+L'idée vient d'une vidéo de Kyan Khojandi. La fiche App Store ne reprend ni son
+nom, ni son image, ni la vidéo.
